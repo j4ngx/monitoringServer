@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 This a bot telegram to monitoring a server
 """
@@ -15,7 +16,7 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
-options = ("restart" : "rebooting", "start" : "starting", "stop" : "stoping")
+options = {"restart": "rebooting", "start": "starting", "stop": "stoping"}
 
 #systemctl status ssh | grep active | cut -d":" -f 2 | cut -d" " -f 2,3
 # Define a few command handlers. These usually take the two arguments update and
@@ -28,65 +29,34 @@ def start(update: Update, context: CallbackContext):
         reply_markup=ForceReply(selective=True),
     )
 
-def getOption():
-	print(command.split("/")[1].split(" ")[0])
-
-def status_command(update: Update, context:CallbackContext):
-	if str(update.message.chat_id) == '576384241':
-            command=update.message.text
-            service=command.split(" ")[1]
-            
-            os.system("systemctl status "+service+" | grep active | cut -d\":\" -f 2 | cut -d\" \" -f 2,3 > tmp")
-            status = open('tmp', 'r').read()
-                
-            if status != "":
-                update.message.reply_text('Status service "'+service+'": ')
-                update.message.reply_text(status)
-            else:
-                update.message.reply_text('The service '+service+' is not installed')
-
-            os.system("rm tmp")
-	else:
-		update.message.reply_text('Invalid user')
-
 def monitoring_command(update: Update, context:CallbackContext):
-	if str(update.message.chat_id) == '576384241':
+    if str(update.message.chat_id) == '576384241':
             command = update.message.text
             service = command.split(" ")[1]
-	    option = command.split("/")[1].split(" ")[0]
-            
-            os.system("systemctl "+option+" "+service)
-	
-            for aux_option in options:
-		if aux_option == option:
-	    	    update.message.reply_text("The servive "+service+"is "+option)
-		
-	else:
-		update.message.reply_text('Invalid user')
+            option = command.split("/")[1].split(" ")[0]
 
-def start_command(update: Update, context:CallbackContext):
-	if str(update.message.chat_id) == '576384241':
-            command=update.message.text
-            service=command.split(" ")[1]
-            
-            os.system("systemctl start "+service)
-           
-	    update.message.reply_text("The servive "+service+"is starting")
-	else:
-		update.message.reply_text('Invalid user')
+            if option == "status":
+                os.system("systemctl status "+service+" | grep active | cut -d\":\" -f 2 | cut -d\" \" -f 2,3 > tmp.txt")
+                status = open('tmp.txt', 'r').read()
+                    
+                if status != "":
+                    update.message.reply_text('Status service "'+service+'": ')
+                    update.message.reply_text(status)
+                else:
+                    update.message.reply_text('The service '+service+' is not installed')
 
-def stop_command(update: Update, context:CallbackContext):
-	if str(update.message.chat_id) == '576384241':
-            command=update.message.text
-            service=command.split(" ")[1]
-            
-            os.system("systemctl stop "+service)
-           
-	    update.message.reply_text("The servive "+service+"is stoping")
-	else:
-		update.message.reply_text('Invalid user')
+                os.system("rm tmp.txt")
 
-		
+            else:
+                for aux_option in options:
+                    if aux_option == option:
+                        os.system("systemctl "+option+" "+service)
+                        update.message.reply_text("The servive "+service+" is "+options[option])
+        
+    else:
+        update.message.reply_text('Invalid user')
+
+
 def main():
     """Start the bot."""
     # Create the Updater and pass it your bot's token.
@@ -96,11 +66,12 @@ def main():
     dispatcher = updater.dispatcher
     
     # on different commands - answer in Telegram
-    dispatcher.add_handler(CommandHandler("start", start))
-    dispatcher.add_handler(CommandHandler("status",status_command))
-    dispatcher.add_handler(CommandHandler("restart",restart_command))
-    dispatcher.add_handler(CommandHandler("start",start_command))
-    dispatcher.add_handler(CommandHandler("stop",stop_command))
+    dispatcher.add_handler(CommandHandler("start_bot", start))
+    dispatcher.add_handler(CommandHandler("status",monitoring_command))
+    dispatcher.add_handler(CommandHandler("restart",monitoring_command))
+    dispatcher.add_handler(CommandHandler("start",monitoring_command))
+    dispatcher.add_handler(CommandHandler("stop",monitoring_command))
+
 
     # Start the Bot
     updater.start_polling()
