@@ -1,5 +1,5 @@
 """
-This a bot telegram for get my public ip
+This a bot telegram to monitoring a server
 """
 
 import logging
@@ -45,6 +45,40 @@ def status_command(update: Update, context:CallbackContext):
 	else:
 		update.message.reply_text('Invalid user')
 
+def restart_command(update: Update, context:CallbackContext):
+	if str(update.message.chat_id) == '576384241':
+            command=update.message.text
+            service=command.split(" ")[1]
+            
+            os.system("systemctl restart "+service)
+           
+	    update.message.reply_text("The servive "+service+"is rebooting")
+	else:
+		update.message.reply_text('Invalid user')
+
+def start_command(update: Update, context:CallbackContext):
+	if str(update.message.chat_id) == '576384241':
+            command=update.message.text
+            service=command.split(" ")[1]
+            
+            os.system("systemctl start "+service)
+           
+	    update.message.reply_text("The servive "+service+"is starting")
+	else:
+		update.message.reply_text('Invalid user')
+
+def stop_command(update: Update, context:CallbackContext):
+	if str(update.message.chat_id) == '576384241':
+            command=update.message.text
+            service=command.split(" ")[1]
+            
+            os.system("systemctl stop "+service)
+           
+	    update.message.reply_text("The servive "+service+"is stoping")
+	else:
+		update.message.reply_text('Invalid user')
+
+		
 def main():
     """Start the bot."""
     # Create the Updater and pass it your bot's token.
@@ -56,6 +90,9 @@ def main():
     # on different commands - answer in Telegram
     dispatcher.add_handler(CommandHandler("start", start))
     dispatcher.add_handler(CommandHandler("status",status_command))
+    dispatcher.add_handler(CommandHandler("restart",restart_command))
+    dispatcher.add_handler(CommandHandler("start",start_command))
+    dispatcher.add_handler(CommandHandler("stop",stop_command))
 
     # Start the Bot
     updater.start_polling()
