@@ -30,7 +30,7 @@ def start(update: Update, context: CallbackContext):
     )
 
 def monitoring_command(update: Update, context:CallbackContext):
-    if str(update.message.chat_id) == '576384241':
+    if str(update.message.chat_id) == '#ID_USER':
             command = update.message.text
             service = command.split(" ")[1]
             option = command.split("/")[1].split(" ")[0]
@@ -60,7 +60,7 @@ def monitoring_command(update: Update, context:CallbackContext):
 def main():
     """Start the bot."""
     # Create the Updater and pass it your bot's token.
-    updater = Updater("5229043461:AAGNWtnlqMHrNBIkkVuUOwBBDA3T7B6HIHY")
+    updater = Updater("TOKEN")
 
     # Get the dispatcher to register handlers
     dispatcher = updater.dispatcher
