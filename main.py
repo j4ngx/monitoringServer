@@ -15,6 +15,8 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
+options = ("restart" : "rebooting", "start" : "starting", "stop" : "stoping")
+
 #systemctl status ssh | grep active | cut -d":" -f 2 | cut -d" " -f 2,3
 # Define a few command handlers. These usually take the two arguments update and
 # context.
@@ -26,6 +28,8 @@ def start(update: Update, context: CallbackContext):
         reply_markup=ForceReply(selective=True),
     )
 
+def getOption():
+	print(command.split("/")[1].split(" ")[0])
 
 def status_command(update: Update, context:CallbackContext):
 	if str(update.message.chat_id) == '576384241':
@@ -45,14 +49,18 @@ def status_command(update: Update, context:CallbackContext):
 	else:
 		update.message.reply_text('Invalid user')
 
-def restart_command(update: Update, context:CallbackContext):
+def monitoring_command(update: Update, context:CallbackContext):
 	if str(update.message.chat_id) == '576384241':
-            command=update.message.text
-            service=command.split(" ")[1]
+            command = update.message.text
+            service = command.split(" ")[1]
+	    option = command.split("/")[1].split(" ")[0]
             
-            os.system("systemctl restart "+service)
-           
-	    update.message.reply_text("The servive "+service+"is rebooting")
+            os.system("systemctl "+option+" "+service)
+	
+            for aux_option in options:
+		if aux_option == option:
+	    	    update.message.reply_text("The servive "+service+"is "+option)
+		
 	else:
 		update.message.reply_text('Invalid user')
 
