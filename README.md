@@ -6,11 +6,11 @@ The function of the script is the creation of a telegram bot for monitoring a Li
 
 In the code you can find this: 
 
-![](./docs/image/1.png)
+![](./docs/images/1.png)
 
 And this:
 
-![](./docs/image/2.png)
+![](./docs/images/2.png)
 
 In this areas you must replace for you **User ID** and **Token** of your bots respectively
 
