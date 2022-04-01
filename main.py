@@ -28,7 +28,10 @@ def start(update: Update, context: CallbackContext):
         fr'Hi {user.mention_markdown_v2()}\!',
         reply_markup=ForceReply(selective=True),
     )
-
+ 
+options = {"restart": "rebooting", "start": "starting", "stop": "stoping"}
+   
+# Take the content of the message and depending on the command and the service, execute a command on the server
 def monitoring_command(update: Update, context:CallbackContext):
     if str(update.message.chat_id) == '#ID_USER':
             command = update.message.text
